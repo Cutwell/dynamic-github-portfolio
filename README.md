@@ -1,5 +1,5 @@
 # Dynamic Pages
-A 100% automated GitHub pages tool.
+An 100% automated GitHub pages tool.
 
 #### [Live example](https://cutwell.github.io)
 
