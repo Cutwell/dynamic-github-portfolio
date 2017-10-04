@@ -1,0 +1,98 @@
+body {
+    background-image: url("../../resources/patterns/japanese.png");
+    background-repeat: repeat;
+}
+span {
+    display: inline-block;
+}
+a {
+    text-decoration: none;
+}
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.repo-container {
+    border-style: none;
+    margin: 1em 1em 1em 1em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    border-radius: 0.5em;
+    width: 25em;
+    height: 10em;
+    background-color: #fff;
+}
+.repo-name {
+    font-family: Verdana, monospace;
+    font-size: 2em;
+}
+.repo-name:hover {
+    text-decoration: overline;
+}
+.repo-stats {
+    text-align: right;
+    padding-right: 1em;
+    top: -0.6em;
+    position: relative;
+    letter-spacing: 0.1em;
+    color: #F8F8F8;
+}
+.repo-desc {
+    font-family: Courier, monospace;
+    font-size: 1em;
+    color: #000;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.repo-desc, .repo-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#title {
+    font-family: Verdana, monospace;
+    font-size: 1.5em;
+}
+#bio {
+    font-family: Verdana, monospace;
+    font-size: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#centered-div {
+    float: right;
+    width: 60em;
+}
+#avatar {
+    border-style: solid;
+    border-color: #fff;
+    border-radius: 50%;
+    height: 10em;
+    width: 10em;
+}
+#user-stats {
+    width: 15em;
+    height: 7em;
+    padding: 1em;
+    margin: 1em;
+    letter-spacing: 0.1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#user-blog {
+    color: #000;
+}
+#repository-list {
+    width: 60em;
+}
+#blog-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@media only screen and (max-width: 1330px) {
+    header {
+        display: none;
+    }
+}
