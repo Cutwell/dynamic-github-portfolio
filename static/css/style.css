@@ -1,10 +1,14 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
 body {
     background-image: url("../../resources/patterns/japanese.png");
     background-repeat: repeat;
 }
-span {
+/* span {
     display: inline-block;
-}
+} */
 a {
     text-decoration: none;
 }
@@ -15,16 +19,18 @@ header {
 }
 .repo-container {
     border-style: none;
-    margin: 1em 1em 1em 1em;
-    padding: 0.5em 0.5em 0.5em 0.5em;
+    margin: 1em;
+    padding: 0px;
     border-radius: 0.5em;
-    width: 25em;
+    width: 23em;
     height: 10em;
-    background-color: #fff;
+    background-color: rgba(0,0,0,0.7);
+    display: inline-block;
 }
 .repo-name {
     font-family: Verdana, monospace;
-    font-size: 2em;
+    font-size: 24px;
+    color: #ffffff;
 }
 .repo-name:hover {
     text-decoration: overline;
@@ -32,7 +38,7 @@ header {
 .repo-stats {
     text-align: right;
     padding-right: 1em;
-    top: -0.6em;
+    top: 0.3em;
     position: relative;
     letter-spacing: 0.1em;
     color: #F8F8F8;
@@ -40,7 +46,7 @@ header {
 .repo-desc {
     font-family: Courier, monospace;
     font-size: 1em;
-    color: #000;
+    color: #cccccc;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -48,6 +54,7 @@ header {
 .repo-desc, .repo-name {
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: 15px 20px;
 }
 #title {
     font-family: Verdana, monospace;
@@ -61,8 +68,8 @@ header {
     text-overflow: ellipsis;
 }
 #centered-div {
-    float: right;
-    width: 60em;
+    /* float: right;
+    width: 60em; */
 }
 #avatar {
     border-style: solid;
@@ -84,7 +91,8 @@ header {
     color: #000;
 }
 #repository-list {
-    width: 60em;
+    width: 50em;
+    margin: auto;
 }
 #blog-link {
     overflow: hidden;
@@ -94,5 +102,15 @@ header {
 @media only screen and (max-width: 1330px) {
     header {
         display: none;
+    }
+}
+@media only screen and (max-width: 50em){
+    #repository-list{
+        width: 25em;
+    }
+}
+@media only screen and (min-width: 75em){
+    #repository-list{
+        width: 75em;
     }
 }
