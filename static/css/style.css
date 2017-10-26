@@ -50,6 +50,7 @@ header {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    height: 1em;
 }
 .repo-desc, .repo-name {
     overflow: hidden;
