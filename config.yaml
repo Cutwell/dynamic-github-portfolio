@@ -1,6 +1,6 @@
 ### USER SETTINGS ###
 # set the target github user (default defined by parsing domain name)
-github: 
+github: Cutwell
 
 ### DISPLAY CUSTOMISATION ###
 # filter displayed repos by stars (default 0)
