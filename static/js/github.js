@@ -3,7 +3,7 @@ $(document).ready(function() {
 });
 
 // initialise vars for YAML //
-var github = window.location.href.split(".")[0].split("//")[1];;
+var github = window.location.href.split(".")[0].split("//")[1];
 var min_stars = 0;
 var min_forks = 0;
 var languages = "";
@@ -16,8 +16,6 @@ function getYAML() {
 }
 
 function getYAMLcallback(yaml) { 
-    console.log(yaml);
-
     // dirty and cheap YAML parser //
     // replace lines starting with # with empty text
     yaml = yaml.replace(/^[#;].*/g, "");
@@ -28,6 +26,8 @@ function getYAMLcallback(yaml) {
     // split into lines
     yaml = yaml.split("\n");
 
+    console.log(yaml);
+
     // iterate and extract key-value pairs
     for (let i = 0; i < yaml.length; i++) {
         keyvalue = yaml[i];
@@ -35,18 +35,21 @@ function getYAMLcallback(yaml) {
         key = keyvalue[0];
         value = keyvalue[1];
 
+        console.log(key);
+        console.log(value);
+
         switch(key) {
             case "github":
-              github = value;
-              break;
+                github = (value == "") ? github : value;
+                break;
             case "min-starts":
-                min_stars = value;
+                min_stars = (value == "") ? 0 : value;
                 break;
             case "min-forks":
-                min_forks = value;
+                min_forks = (value == "") ? 0 : value;
                 break;
             case "languages":
-                languages = value;
+                languages = (value == "") ? "" : value;
                 break;
             default:
                 break;
