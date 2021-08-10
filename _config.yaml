@@ -1,0 +1,14 @@
+### USER SETTINGS ###
+# set the target github user (default defined by parsing domain name)
+github: 
+
+### DISPLAY CUSTOMISATION ###
+# filter displayed repos by stars (default 0)
+min-stars: 
+
+# filter displayed repos by forks (default 0)
+min-forks: 
+
+# filter displayed repos by language (default all)
+#languages: [HTML, CSS, JavaScript, Python]
+languages: 

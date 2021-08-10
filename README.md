@@ -1,19 +1,17 @@
-# Cutwell.GitHub.IO
+# Dynamic GitHub Portfolio
+Automated and easy portfolio page for GitHub.
 
-### Contributions
-Found a language not included in lang.css? Make a pull-request!
+## GitHub Pages hosting
+If hosting this template for a GitHub Pages repository, then the page will detect the target user from the domain name.
 
-### Setting Ajax requests manually
-If you intend to host this website on a none-github domain, you will need to set the Ajax requests manually.
-1. Enter git.js
-2. delete the top line:
-```javascript
-var url = window.location.href.split(".")[0];
-```
-3. replace it with this:
-```javascript
-var url = "YOUR_USER_NAME";
-```
-Where YOUR_USER_NAME is your GitHub user name.
+## Self hosting
+If hosting this template for a custom domain name, a none-GitHub Pages server, or wish to display the portfolio of a different account, then update the `username` variable in `_config.yaml` to your username.
 
-4. Repeat for user.js
+## Features
+* 100% automatic, works out-of-the-box.
+* Display all your github repositories automatically.
+* Attractive rendering, copying GitHub's own style.
+* Customise displayed repositories using `_config.yaml`.
+
+## License
+MIT
