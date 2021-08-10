@@ -73,7 +73,7 @@ function getGithub() {
 
     // get repos
     $.ajax({
-        url: "https://api.github.com/users/"+github+"/repos/",
+        url: "https://api.github.com/users/"+github+"/repos",
         jsonp: true,
         method: "GET",
         dataType: "json",
