@@ -26,17 +26,12 @@ function getYAMLcallback(yaml) {
     // split into lines
     yaml = yaml.split("\n");
 
-    console.log(yaml);
-
     // iterate and extract key-value pairs
     for (let i = 0; i < yaml.length; i++) {
         keyvalue = yaml[i];
         keyvalue = keyvalue.split(":");
         key = keyvalue[0];
         value = keyvalue[1];
-
-        console.log(key);
-        console.log(value);
 
         // switch-case to set key-value pairs
         // (value === undefined) to catch empty yaml keys and set as defaults
@@ -68,7 +63,7 @@ function getGithub() {
         jsonp: true,
         method: "GET",
         dataType: "json",
-        success: function(json) { getGithubUsercallback(json); }
+        success: function(data) { getGithubUsercallback(data); }
     });
 
     // get repos
@@ -77,7 +72,7 @@ function getGithub() {
         jsonp: true,
         method: "GET",
         dataType: "json",
-        success: function(json) { getGithubReposcallback }
+        success: function(data) { getGithubReposcallback(data) }
     });
 }
 
