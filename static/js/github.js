@@ -38,18 +38,20 @@ function getYAMLcallback(yaml) {
         console.log(key);
         console.log(value);
 
+        // switch-case to set key-value pairs
+        // (value === undefined) to catch empty yaml keys and set as defaults
         switch(key) {
             case "github":
-                github = (value == "") ? github : value;
+                github = (value === undefined) ? github : value;
                 break;
             case "min-starts":
-                min_stars = (value == "") ? 0 : value;
+                min_stars = (value === undefined) ? 0 : value;
                 break;
             case "min-forks":
-                min_forks = (value == "") ? 0 : value;
+                min_forks = (value === undefined) ? 0 : value;
                 break;
             case "languages":
-                languages = (value == "") ? "" : value;
+                languages = (value === undefined) ? "" : value;
                 break;
             default:
                 break;
