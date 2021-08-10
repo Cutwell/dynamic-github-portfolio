@@ -10,8 +10,7 @@ var languages = "";
 
 function getYAML() {
     $.ajax({
-        url: "_config.yaml",
-        async: false,
+        url: "config.yaml",
         success: function(yaml) { getYAMLcallback(yaml); }
     });
 }
