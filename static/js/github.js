@@ -143,7 +143,7 @@ function getGithubReposcallback(data) {
                 });
                 // else
                 if (elseFlag) {
-                    composeGitHubCardcallback(repo, "_static/img/GitHub-Mark-120px-plus.png", index);
+                    composeGitHubCardcallback(repo, "static/img/GitHub-Mark-120px-plus.png", index);
                 }
             }
         });
