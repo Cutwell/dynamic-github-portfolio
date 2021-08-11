@@ -11,7 +11,14 @@ var languages = "";
 function getYAML() {
     $.ajax({
         url: "config.yaml",
-        success: function(yaml) { getYAMLcallback(yaml); }
+        success: function(yaml) { getYAMLcallback(yaml); },
+        error: function(xhr, status, error) {
+            console.log("config.yaml: ", xhr, status, error)
+
+            $('#error-div').show();
+            let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`
+            $('#error-details').append(html);
+        }
     });
 }
 
@@ -63,7 +70,14 @@ function getGithub() {
         jsonp: true,
         method: "GET",
         dataType: "json",
-        success: function(data) { getGithubUsercallback(data); }
+        success: function(data) { getGithubUsercallback(data); },
+        error: function(xhr, status, error) {
+            console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
+
+            $('#error-div').show();
+            let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
+            $('#error-details').append(html);
+        }
     });
 
     // get repos
@@ -72,52 +86,80 @@ function getGithub() {
         jsonp: true,
         method: "GET",
         dataType: "json",
-        success: function(data) { getGithubReposcallback(data) }
+        success: function(data) { getGithubReposcallback(data) },
+        error: function(xhr, status, error) {
+            console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
+
+            $('#error-div').show();
+            let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
+            $('#error-details').append(html);
+        }
     });
 }
 
 function getGithubUsercallback(data) {
-    $("#header-link").attr('href', data['html_url']);
-    $("#header-image").attr('src', data['avatar_url']);
-    $("#header-username").text(data["login"]);
-    $("#header-name").text(data["name"]);
-    $("#header-bio").text(data["bio"]);
-    $("#header-followers").text(data["followers"]);
-    $("#header-public-repos").text(data["public_repos"]);
-    
-    if (data["company"] != "") {
-        $("#header-company").text(data["company"]);
-    }
-    else {
-        $("#header-company-div").hide();
-        $("#header-company").hide();
-    }
-    
-    if (data["blog"] != "") {
-        $("#header-blog").text(data["blog"]);
-    }
-    else {
-        $("#header-blog-div").hide();
-        $("#header-blog").hide();
-    }
+    if (Object.keys(data).includes('message')) {
+        if (data['message'] == "Not Found") {
+            console.log("User '", github, "' not found. Is `config.yaml` configured?")
 
-    if (data["email"] != null) {
-        $("#header-email").text(data["email"]);
+            $('#error-div').show();
+            let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`
+            $('#error-details').append(html);
+        }
     }
     else {
-        $("#header-email-div").hide();
-        $("#header-email").hide();
-    }
+        $("#header-link").attr('href', data['html_url']);
+        $("#header-image").attr('src', data['avatar_url']);
+        $("#header-username").text(data["login"]);
+        document.title = data["login"];
+        $("#header-name").text(data["name"]);
+        $("#header-bio").text(data["bio"]);
+        $("#header-followers").text(data["followers"]);
+        $("#header-public-repos").text(data["public_repos"]);
+        
+        if (data["company"] != "") {
+            $("#header-company").text(data["company"]);
+        }
+        else {
+            $("#header-company-div").hide();
+            $("#header-company").hide();
+        }
+        
+        if (data["blog"] != "") {
+            $("#header-blog").text(data["blog"]);
+        }
+        else {
+            $("#header-blog-div").hide();
+            $("#header-blog").hide();
+        }
     
-    if (data["hireable"]) {
-        $("#header-hireable").show();
-    }
-    else {
-        $("#header-hireable").hide();
+        if (data["email"] != null) {
+            $("#header-email").text(data["email"]);
+        }
+        else {
+            $("#header-email-div").hide();
+            $("#header-email").hide();
+        }
+        
+        if (data["hireable"]) {
+            $("#header-hireable").show();
+        }
+        else {
+            $("#header-hireable").hide();
+        }
     }
 }
 
 function getGithubReposcallback(data) {
+    if (Object.keys(data).includes('message')) {
+        if (data['message'] == "Not Found") {
+            console.log("User '", github, "' not found. Is `config.yaml` configured?")
+
+            $('#error-div').show();
+            let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`
+            $('#error-details').append(html);
+        }
+    }
     data.sort(function(a, b) {
         return Date.parse(a.updated_at) - Date.parse(b.updated_at);
     })
@@ -144,12 +186,19 @@ function getGithubReposcallback(data) {
                 if (elseFlag) {
                     composeGitHubCardcallback(repo, "static/img/GitHub-Mark-120px-plus.png", index);
                 }
+            },
+            error: function(xhr, status, error) {
+                console.log(repo['url'], "/contents/:", xhr, status, error)
+    
+                $('#error-div').show();
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                $('#error-details').append(html);
             }
         });
     });
 }
 
-async function sleepUntil(f, timeoutMs) {
+async function sleepUntil(repo_name, f, timeoutMs) {
     return new Promise((resolve, reject) => {
         let timeWas = new Date();
         let wait = setInterval(function() {
@@ -158,7 +207,13 @@ async function sleepUntil(f, timeoutMs) {
                 clearInterval(wait);
                 resolve();
             } else if (new Date() - timeWas > timeoutMs) { // Timeout
-                console.log("rejected after", new Date() - timeWas, "ms");
+                let ms_reject = new Date() - timeWas;
+
+                console.log(`${repo_name} did not resolve within ${ms_reject}ms`)
+                $('#error-div').show();
+                let html = `<p class="error-em">${Date.now()}: ${repo_name} did not resolve within ${ms_reject}</p>`
+                $('#error-details').append(html);
+
                 clearInterval(wait);
                 reject();
             }
@@ -209,7 +264,7 @@ async function composeGitHubCardcallback(repo, image_download_url, index) {
     }
     else {
         // await previous repos resolving
-        await sleepUntil(() => document.querySelector(`#repos div:nth-child(${index})`), 5000);
+        await sleepUntil(() => repo['html_url'], document.querySelector(`#repos div:nth-child(${index})`), 5000);
 
         $(`#repos div:nth-child(${index})`).after(html);
     }   
