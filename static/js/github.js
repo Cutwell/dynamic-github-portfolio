@@ -10,6 +10,7 @@ var languages = "";
 
 function getYAML() {
     $.ajax({
+        type: "GET",
         url: "config.yaml",
         success: function(yaml) { getYAMLcallback(yaml); },
         error: function(xhr, status, error) {
@@ -200,6 +201,7 @@ function getGithubReposcallback(data) {
 }
 
 function thumbnailSearch(repo, url, dirs) {
+    console.log(repo, url, dirs);
     $.ajax({
         // assumes initial url passed is formatted for root dir
         url: url,
