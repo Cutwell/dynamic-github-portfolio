@@ -196,11 +196,11 @@ function getGithubReposcallback(data) {
         // each process returns an image for use as a thumbnail
 
         let url = repo['url']+"/contents/";
-        thumbnailSearch(repo, url, new Array())
+        thumbnailSearch(repo, index, url, new Array())
     });
 }
 
-function thumbnailSearch(repo, url, dirs) {
+function thumbnailSearch(repo, index, url, dirs) {
     console.log(repo, url, dirs);
     $.ajax({
         // assumes initial url passed is formatted for root dir
@@ -241,7 +241,7 @@ function thumbnailSearch(repo, url, dirs) {
                 else {
                     // recurse, using a dir from dirs
                     let nextUrl = dirs.shift();
-                    thumbnailSearch(nextUrl, dirs);
+                    thumbnailSearch(repo, index, nextUrl, dirs);
                 }
             }
             else {
