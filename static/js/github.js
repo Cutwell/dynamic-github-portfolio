@@ -15,6 +15,7 @@ function getYAML() {
         error: function(xhr, status, error) {
             console.log("config.yaml: ", xhr, status, error)
 
+            $('#loading').attr("visibility", "hidden");
             $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`
             $('#error-details').append(html);
@@ -74,6 +75,7 @@ function getGithub() {
         error: function(xhr, status, error) {
             console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
 
+            $('#loading').attr("visibility", "hidden");
             $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
             $('#error-details').append(html);
@@ -90,6 +92,7 @@ function getGithub() {
         error: function(xhr, status, error) {
             console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
 
+            $('#loading').attr("visibility", "hidden");
             $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
             $('#error-details').append(html);
