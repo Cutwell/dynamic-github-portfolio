@@ -4,7 +4,7 @@ github: Cutwell
 
 ### DISPLAY CUSTOMISATION ###
 # filter displayed repos by stars (default 0)
-min-stars: 
+min-stars: 1
 
 # filter displayed repos by forks (default 0)
 min-forks: 

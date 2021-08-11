@@ -161,6 +161,7 @@ function getGithubReposcallback(data) {
             $('#error-details').append(html);
         }
     }
+
     data.sort(function(a, b) {
         return Date.parse(a.updated_at) - Date.parse(b.updated_at);
     })
@@ -171,7 +172,17 @@ function getGithubReposcallback(data) {
 
     // must iterate .map twice, as spider processes wait on previous indexes to return before adding content
     // to the DOM, meaning rejection must occur seperately to prevent deadlock.
-    let filtered = data.filter(repo => repo['stargazers_count'] >= min_stars && repo['forks_count'] >= min_forks && languages.includes(repo['languages']));
+    let filtered = data.filter(function(repo) {
+        // filter by repo >= minimum stars
+        // filter by repo >= minimum forks
+        // filter by inclusion in languages list (if empty, all are included)
+        if (repo['stargazers_count'] >= min_stars && repo['forks_count'] >= min_forks && (languages.includes(repo['languages']) || languages == "")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
 
     filtered.map((repo, index) => {
         // spawn individual spiders for each repository
