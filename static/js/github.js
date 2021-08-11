@@ -148,6 +148,9 @@ function getGithubUsercallback(data) {
         else {
             $("#header-hireable").hide();
         }
+
+        $('#profile-header').attr("visibility", "visible");
+        $('#loading').attr("visibility", "hidden");
     }
 }
 
@@ -286,5 +289,7 @@ async function composeGitHubCardcallback(repo, image_download_url, index) {
         await sleepUntil(() => document.querySelector(`#repos div:nth-child(${index})`), 5000, repo['html_url']);
 
         $(`#repos div:nth-child(${index})`).after(html);
-    }   
+    }
+    
+    $('#loading').attr("visibility", "hidden");
 }
