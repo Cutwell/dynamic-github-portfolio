@@ -191,32 +191,67 @@ function getGithubReposcallback(data) {
         // spawn individual spiders for each repository
         // each process returns an image for use as a thumbnail
 
-        // TODO: runs asychronously, so need to fix ordering DOM content insertion
-        // TODO: spider checks root directory only, add breadth-first traversal of sub-directories
-        $.ajax({
-            url: repo['url']+"/contents/",
-            success: function(contents) {
-                let elseFlag = true;
-                // search top level directory for image file
-                contents.map((item) => {
-                    if (item['name'].includes(".png") && item['type'] == "file") {
-                        composeGitHubCardcallback(repo, item['download_url'], index);
-                        elseFlag = false;
-                    }
-                });
-                // else
-                if (elseFlag) {
+        let url = repo['url']+"/contents/";
+        thumbnailSearch(url, new Array())
+    });
+}
+
+function thumbnailSearch(url, [dirs]) {
+    $.ajax({
+        // assumes initial url passed is formatted for root dir
+        url: url,
+        success: function(contents) {
+            let images = contents.filter(function(item) {
+                if (item['name'].includes(".png") && item['type'] == "file") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            let directories = contents.filter(function(item) {
+                if (item['type'] == "dir") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            let dir_urls = new Array();
+            if (directories.length != 0) {
+                // if directories discovered, append them to 'dirs' for viewing
+                dir_urls = directories.map(dir => dir.url);
+            }
+
+            dirs = dirs.concat(dirs, dir_urls);
+
+            if (images.length == 0) {
+                // if no images found in this dir
+                if (dirs.length == 0) {
+                    // if no further directories to view, use default image
                     composeGitHubCardcallback(repo, "static/img/GitHub-Mark-120px-plus.png", index);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.log(repo['url'], "/contents/:", xhr, status, error)
-    
-                $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
-                $('#error-details').append(html);
+                else {
+                    // recurse, using a dir from dirs
+                    let nextUrl = dirs.shift();
+                    thumbnailSearch(nextUrl, dirs);
+                }
             }
-        });
+            else {
+                // if images are found, use first discovered
+                let image = images[0];
+                composeGitHubCardcallback(repo, image['download_url'], index);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log(repo['url'], "/contents/:", xhr, status, error)
+
+            $('#error-div').attr("visibility", "visible");
+            let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+            $('#error-details').append(html);
+        }
     });
 }
 
