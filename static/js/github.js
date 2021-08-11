@@ -15,7 +15,7 @@ function getYAML() {
         error: function(xhr, status, error) {
             console.log("config.yaml: ", xhr, status, error)
 
-            $('#error-div').show();
+            $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`
             $('#error-details').append(html);
         }
@@ -74,7 +74,7 @@ function getGithub() {
         error: function(xhr, status, error) {
             console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
 
-            $('#error-div').show();
+            $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
             $('#error-details').append(html);
         }
@@ -90,7 +90,7 @@ function getGithub() {
         error: function(xhr, status, error) {
             console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
 
-            $('#error-div').show();
+            $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
             $('#error-details').append(html);
         }
@@ -102,7 +102,7 @@ function getGithubUsercallback(data) {
         if (data['message'] == "Not Found") {
             console.log("User '", github, "' not found. Is `config.yaml` configured?")
 
-            $('#error-div').show();
+            $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`
             $('#error-details').append(html);
         }
@@ -156,7 +156,7 @@ function getGithubReposcallback(data) {
         if (data['message'] == "Not Found") {
             console.log("User '", github, "' not found. Is `config.yaml` configured?")
 
-            $('#error-div').show();
+            $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`
             $('#error-details').append(html);
         }
@@ -209,7 +209,7 @@ function getGithubReposcallback(data) {
             error: function(xhr, status, error) {
                 console.log(repo['url'], "/contents/:", xhr, status, error)
     
-                $('#error-div').show();
+                $('#error-div').attr("visibility", "visible");
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`
                 $('#error-details').append(html);
             }
@@ -229,7 +229,7 @@ async function sleepUntil(f, timeoutMs, repo_name) {
                 let ms_reject = new Date() - timeWas;
 
                 console.log(`${repo_name} did not resolve within ${ms_reject}ms`)
-                $('#error-div').show();
+                $('#error-div').attr("visibility", "visible");
                 let html = `<p class="error-em">${Date.now()}: ${repo_name} did not resolve within ${ms_reject}</p>`
                 $('#error-details').append(html);
 
