@@ -127,6 +127,7 @@ function getGithubUsercallback(data) {
         
         if (data["blog"] != "") {
             $("#header-blog").text(data["blog"]);
+            $("#header-blog").attr("href", data["blog"]);
         }
         else {
             $("#header-blog-div").hide();
@@ -165,7 +166,14 @@ function getGithubReposcallback(data) {
     })
     data.reverse();
 
-    data.map((repo, index) => {
+    // iterate repository list, removing repositories that do not meet filter criteria
+    // as defined by config.yaml
+
+    // must iterate .map twice, as spider processes wait on previous indexes to return before adding content
+    // to the DOM, meaning rejection must occur seperately to prevent deadlock.
+    let filtered = data.filter(repo => repo['stargazers_count'] >= min_stars && repo['forks_count'] >= min_forks && languages.includes(repo['languages']));
+
+    filtered.map((repo, index) => {
         // spawn individual spiders for each repository
         // each process returns an image for use as a thumbnail
 
