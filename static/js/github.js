@@ -196,7 +196,7 @@ function getGithubReposcallback(data) {
     });
 }
 
-function thumbnailSearch(url, [dirs]) {
+function thumbnailSearch(url, dirs) {
     $.ajax({
         // assumes initial url passed is formatted for root dir
         url: url,
