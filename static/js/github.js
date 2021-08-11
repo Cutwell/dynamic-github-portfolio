@@ -192,11 +192,11 @@ function getGithubReposcallback(data) {
         // each process returns an image for use as a thumbnail
 
         let url = repo['url']+"/contents/";
-        thumbnailSearch(url, new Array())
+        thumbnailSearch(repo, url, new Array())
     });
 }
 
-function thumbnailSearch(url, dirs) {
+function thumbnailSearch(repo, url, dirs) {
     $.ajax({
         // assumes initial url passed is formatted for root dir
         url: url,
