@@ -12,6 +12,7 @@ function getYAML() {
     $.ajax({
         type: "GET",
         url: "config.yaml",
+        timeout: 5000,
         success: function(yaml) { getYAMLcallback(yaml); },
         error: function(xhr, status, error) {
             console.log("config.yaml: ", xhr, status, error)
@@ -69,6 +70,7 @@ function getGithub() {
     // get user
     $.ajax({
         url: "https://api.github.com/users/"+github,
+        timeout: 5000,
         jsonp: true,
         method: "GET",
         dataType: "json",
@@ -86,6 +88,7 @@ function getGithub() {
     // get repos
     $.ajax({
         url: "https://api.github.com/users/"+github+"/repos",
+        timeout: 5000,
         jsonp: true,
         method: "GET",
         dataType: "json",
@@ -205,6 +208,7 @@ function thumbnailSearch(repo, index, url, dirs) {
     $.ajax({
         // assumes initial url passed is formatted for root dir
         url: url,
+        timeout: 5000,
         success: function(contents) {
             let images = contents.filter(function(item) {
                 if (item['name'].includes(".png") && item['type'] == "file") {
