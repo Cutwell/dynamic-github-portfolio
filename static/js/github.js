@@ -198,7 +198,7 @@ function getGithubReposcallback(data) {
     });
 }
 
-async function sleepUntil(repo_name, f, timeoutMs) {
+async function sleepUntil(f, timeoutMs, repo_name) {
     return new Promise((resolve, reject) => {
         let timeWas = new Date();
         let wait = setInterval(function() {
@@ -264,7 +264,7 @@ async function composeGitHubCardcallback(repo, image_download_url, index) {
     }
     else {
         // await previous repos resolving
-        await sleepUntil(() => repo['html_url'], document.querySelector(`#repos div:nth-child(${index})`), 5000);
+        await sleepUntil(() => document.querySelector(`#repos div:nth-child(${index})`), 5000, repo['html_url']);
 
         $(`#repos div:nth-child(${index})`).after(html);
     }   
