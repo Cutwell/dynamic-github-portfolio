@@ -379,12 +379,12 @@ function filterGithubRepoJson(data) {
 function queryGithubThumbnailCache(api, index) {
     console.log("queryGithubThumbnailCache: ", api['url']);
 
-    let url = repo['url'];
+    let url = api['url'];
     let cache = localStorage.getItem(url);
 
     if (cache === null) {
         // if no cache, search for thumbnail then create cache in callback
-        let content_url = repo['url']+"/contents/";
+        let content_url = api['url']+"/contents/";
         thumbnailShallowSearch(api, index, content_url);
     }
     else {
@@ -392,7 +392,7 @@ function queryGithubThumbnailCache(api, index) {
 
         if (querySuperseded(repo, api)) {
             // superseded, search for thumbnail then recreate cache in callback
-            let content_url = repo['url']+"/contents/";
+            let content_url = api['url']+"/contents/";
             thumbnailShallowSearch(api, index, content_url);
         }
         else {
