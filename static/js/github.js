@@ -16,11 +16,11 @@ function getYAML() {
         timeout: 5000,
         success: function(yaml) { getYAMLcallback(yaml); },
         error: function(xhr, status, error) {
-            console.log("config.yaml: ", xhr, status, error)
+            console.log("config.yaml: ", xhr, status, error);
 
             $('#loading').css({"visiblity": "hidden", "display":"none"});
             $('#error-div').css("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`
+            let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`;
             $('#error-details').append(html);
         },
     });
@@ -77,33 +77,39 @@ function getGithub() {
         jsonp: true,
         method: "GET",
         dataType: "json",
-        success: function(data) { getGithubUsercallback(data); },
+        success: function(data) { getGithubUserAPICallback(data); },
         error: function(xhr, status, error) {
-            console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
+            console.log("https://api.github.com/users/", github, ": ", xhr, status, error);
 
             $('#loading').css({"visiblity": "hidden", "display":"none"});
             $('#error-div').css("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
+            let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`;
             $('#error-details').append(html);
+
+            getGithubUserCachedCallback();
         },
         // monitor xhr to catch rate limit errors (not caught by error function)
         xhr: function(){
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("error", function(evt){
-                console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
+                console.log("https://api.github.com/users/", github, ": ", xhr, status, error);
 
                 $('#loading').css({"visiblity": "hidden", "display":"none"});
                 $('#error-div').css("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
+                let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`;
                 $('#error-details').append(html);
+
+                getGithubUserCachedCallback();
             }, false);
             xhr.addEventListener("abort", function(){
-                console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
+                console.log("https://api.github.com/users/", github, ": ", xhr, status, error);
 
                 $('#loading').css({"visiblity": "hidden", "display":"none"});
                 $('#error-div').css("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
+                let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`;
                 $('#error-details').append(html);
+
+                getGithubUserCachedCallback();
             }, false);
     
             return xhr;
@@ -117,104 +123,190 @@ function getGithub() {
         jsonp: true,
         method: "GET",
         dataType: "json",
-        success: function(data) { getGithubReposcallback(data) },
+        success: function(data) { getGithubRepoCallback(data) },
         error: function(xhr, status, error) {
-            console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
+            console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error);
 
             $('#loading').css({"visiblity": "hidden", "display":"none"});
             $('#error-div').attr("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
+            let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
             $('#error-details').append(html);
+
+            getGithubRepoCachedCallback();
         },
         // monitor xhr to catch rate limit errors (not caught by error function)
         xhr: function(){
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("error", function(evt){
-                console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
+                console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error);
 
                 $('#loading').css({"visiblity": "hidden", "display":"none"});
                 $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
+                let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
                 $('#error-details').append(html);
             }, false);
             xhr.addEventListener("abort", function(){
-                console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
+                console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error);
 
                 $('#loading').css({"visiblity": "hidden", "display":"none"});
                 $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
+                let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
                 $('#error-details').append(html);
             }, false);
+
     
             return xhr;
         },
     });
 }
 
-function getGithubUsercallback(data) {
+function getGithubUserCachedCallback() {
+    // check cache for user data
+    let url = "https://api.github.com/users/"+github;
+    let user_cache = localStorage.getItem(url);
+
+    if (user_cache === null) {
+        console.log("https://api.github.com/users/", github, " cache empty");
+
+        $('#loading').css({"visiblity": "hidden", "display":"none"});
+        $('#error-div').attr("visibility", "visible");
+        let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github} failed</p>`;
+        $('#error-details').append(html);
+    }
+    else {
+        let user_data = JSON.parse(user_cache);
+
+        if (queryExpired(user_data)) {
+            // not expired
+            composeGitHubUserProfile(user_data);
+        }
+        else {
+            // expired
+            console.log("https://api.github.com/users/", github, " cache expired");
+
+            $('#loading').css({"visiblity": "hidden", "display":"none"});
+            $('#error-div').attr("visibility", "visible");
+            let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github} failed</p>`;
+            $('#error-details').append(html);
+        }
+    }
+}
+
+function queryExpired(cache_json) {
+    if ( Math.floor((new Date() - cache_json['cache_genesis'])/60000) < 2 ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getGithubUserAPICallback(data) {
     if (Object.keys(data).includes('message')) {
         if (data['message'] == "Not Found") {
-            console.log("User '", github, "' not found. Is `config.yaml` configured?")
+            console.log("User '", github, "' not found. Is `config.yaml` configured?");
 
             $('#error-div').attr("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`
+            let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`;
             $('#error-details').append(html);
         }
     }
     else {
-        $("#header-link").attr('href', data['html_url']);
-        $("#header-image").attr('src', data['avatar_url']);
-        $("#header-username").text(data["login"]);
-        document.title = data["login"];
-        $("#header-name").text(data["name"]);
-        $("#header-bio").text(data["bio"]);
-        $("#header-followers").text(data["followers"]);
-        $("#header-public-repos").text(data["public_repos"]);
-        
-        if (data["company"] != "") {
-            $("#header-company").text(data["company"]);
-        }
-        else {
-            $("#header-company-div").hide();
-            $("#header-company").hide();
-        }
-        
-        if (data["blog"] != "") {
-            $("#header-blog").text(data["blog"]);
-            $("#header-blog").attr("href", data["blog"]);
-        }
-        else {
-            $("#header-blog-div").hide();
-            $("#header-blog").hide();
-        }
-    
-        if (data["email"] != null) {
-            $("#header-email").text(data["email"]);
-        }
-        else {
-            $("#header-email-div").hide();
-            $("#header-email").hide();
-        }
-        
-        if (data["hireable"]) {
-            $("#header-hireable").show();
-        }
-        else {
-            $("#header-hireable").hide();
-        }
+        // update cache
+        // add genesis (for calculating expiration)
+        data.cache_genesis = new Date();
+        let json_string = JSON.stringify(data);
+        localStorage.setItem(data['url'], json_string);
 
-        $('#loading').css({"visiblity": "visible"});
-        $('#loading').css({"visiblity": "hidden", "display":"none"});
+        // compose DOM
+        composeGitHubUserProfile(data);
     }
 }
 
-function getGithubReposcallback(data) {
+function composeGitHubUserProfile(data) {
+    $("#header-link").attr('href', data['html_url']);
+    $("#header-image").attr('src', data['avatar_url']);
+    $("#header-username").text(data["login"]);
+    document.title = data["login"];
+    $("#header-name").text(data["name"]);
+    $("#header-bio").text(data["bio"]);
+    $("#header-followers").text(data["followers"]);
+    $("#header-public-repos").text(data["public_repos"]);
+    
+    if (data["company"] != "") {
+        $("#header-company").text(data["company"]);
+    }
+    else {
+        $("#header-company-div").hide();
+        $("#header-company").hide();
+    }
+    
+    if (data["blog"] != "") {
+        $("#header-blog").text(data["blog"]);
+        $("#header-blog").attr("href", data["blog"]);
+    }
+    else {
+        $("#header-blog-div").hide();
+        $("#header-blog").hide();
+    }
+
+    if (data["email"] != null) {
+        $("#header-email").text(data["email"]);
+    }
+    else {
+        $("#header-email-div").hide();
+        $("#header-email").hide();
+    }
+    
+    if (data["hireable"]) {
+        $("#header-hireable").show();
+    }
+    else {
+        $("#header-hireable").hide();
+    }
+
+    $('#loading').css({"visiblity": "visible"});
+    $('#loading').css({"visiblity": "hidden", "display":"none"});
+}
+
+function getGithubRepoCachedCallback() {
+    // check cache for repository data
+    let url = "https://api.github.com/users/"+github+"/repos";
+    let repo_list_cache = localStorage.getItem(url);
+
+    if (repo_list_cache === null) {
+        console.log("https://api.github.com/users/", github, "/repos cache empty");
+
+        $('#loading').css({"visiblity": "hidden", "display":"none"});
+        $('#error-div').attr("visibility", "visible");
+        let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
+        $('#error-details').append(html);
+    }
+    else {
+        let repo_list_data = JSON.parse(repo_list_cache);
+
+        if (queryExpired(repo_list_data)) {
+            // not expired
+            filterGithubRepoJson(repo_list_data);
+        }
+        else {
+            // expired
+            console.log("https://api.github.com/users/", github, "/repos cache expired");
+
+            $('#loading').css({"visiblity": "hidden", "display":"none"});
+            $('#error-div').attr("visibility", "visible");
+            let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
+            $('#error-details').append(html);
+        }
+    }
+}
+
+function getGithubRepoCallback(data) {
     if (Object.keys(data).includes('message')) {
         if (data['message'] == "Not Found") {
-            console.log("User '", github, "' not found. Is `config.yaml` configured?")
+            console.log("User '", github, "' not found. Is `config.yaml` configured?");
 
             $('#error-div').attr("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`
+            let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`;
             $('#error-details').append(html);
         }
     }
@@ -224,6 +316,16 @@ function getGithubReposcallback(data) {
     })
     data.reverse();
 
+    // store repository list data into cache
+    let url = "https://api.github.com/users/"+github+"/repos";
+    data.cache_genesis = new Date();
+    let json_string = JSON.stringify(data);
+    localStorage.setItem(url, json_string)
+
+    filterGithubRepoJson(data);
+}
+
+function filterGithubRepoJson(data) {
     // reduce repository list to display limit
     if (display > -1) {
         // set length of array to delete data past index.
@@ -250,12 +352,43 @@ function getGithubReposcallback(data) {
     });
 
     filtered.map((repo, index) => {
-        // spawn individual spiders for each repository
-        // each process returns an image for use as a thumbnail
+        // update repo cache as necessary
 
-        let url = repo['url']+"/contents/";
-        thumbnailShallowSearch(repo, index, url, new Array())
+        let url = repo['url'];
+        queryGithubRepoCache(url, repo, index);
     });
+}
+
+
+function queryGithubRepoCache(url, api, index) {
+    let cache = localStorage.getItem(url);
+
+    if (cache === null) {
+        // if no cache, search for thumbnail then create cache in callback
+        let content_url = repo['url']+"/contents/";
+        thumbnailShallowSearch(api, index, content_url);
+    }
+    else {
+        if (queryExpired(user_data)) {
+            // not expired
+            let repo = JSON.parse(cache);
+            composeGitHubCardcallback(repo, index)
+        }
+        else {
+            // expired, search for thumbnail then recreate cache in callback
+            let content_url = repo['url']+"/contents/";
+            thumbnailShallowSearch(api, index, content_url);
+        }
+    }
+}
+
+function thumbnailSearchCallback(repo, index) {
+    let url = repo['url'];
+    data.cache_genesis = new Date();
+    let json_string = JSON.stringify(repo);
+    localStorage.setItem(url, json_string);
+
+    composeGithubRepoCard(repo, index);
 }
 
 function thumbnailShallowSearch(repo, index, url) {
@@ -275,37 +408,48 @@ function thumbnailShallowSearch(repo, index, url) {
 
             if (images.length == 0) {
                 // if no images found in this dir, use default image
-                composeGitHubCardcallback(repo, "static/img/GitHub-Mark-120px-plus.png", index);
+                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+                thumbnailSearchCallback(repo, index);
             }
             else {
                 // if images are found, use first discovered
                 let image = images[0];
-                composeGitHubCardcallback(repo, image['download_url'], index);
+                repo.thumbnail_url = image;
+                thumbnailSearchCallback(repo, index);
             }
         },
         error: function(xhr, status, error) {
-            console.log(repo['url'], "/contents/:", xhr, status, error)
+            console.log(repo['url'], "/contents/:", xhr, status, error);
 
             $('#error-div').attr("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+            let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
             $('#error-details').append(html);
+
+            repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+            thumbnailSearchCallback(repo, index);
         },
         // monitor xhr to catch rate limit errors (not caught by error function)
         xhr: function(){
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("error", function(evt){
-                console.log(repo['url'], "/contents/:", xhr, status, error)
+                console.log(repo['url'], "/contents/:", xhr, status, error);
 
                 $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
+
+                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+                thumbnailSearchCallback(repo, index);
             }, false);
             xhr.addEventListener("abort", function(){
-                console.log(repo['url'], "/contents/:", xhr, status, error)
+                console.log(repo['url'], "/contents/:", xhr, status, error);
 
                 $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
+
+                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+                thumbnailSearchCallback(repo, index);
             }, false);
     
             return xhr;
@@ -364,27 +508,27 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
             }
         },
         error: function(xhr, status, error) {
-            console.log(repo['url'], "/contents/:", xhr, status, error)
+            console.log(repo['url'], "/contents/:", xhr, status, error);
 
             $('#error-div').attr("visibility", "visible");
-            let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+            let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
             $('#error-details').append(html);
         },
         // monitor xhr to catch rate limit errors (not caught by error function)
         xhr: function(){
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener("error", function(evt){
-                console.log(repo['url'], "/contents/:", xhr, status, error)
+                console.log(repo['url'], "/contents/:", xhr, status, error);
 
                 $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
             }, false);
             xhr.addEventListener("abort", function(){
-                console.log(repo['url'], "/contents/:", xhr, status, error)
+                console.log(repo['url'], "/contents/:", xhr, status, error);
 
                 $('#error-div').attr("visibility", "visible");
-                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
             }, false);
     
@@ -416,7 +560,7 @@ async function sleepUntil(f, timeoutMs, repo_name) {
     });
 }
 
-async function composeGitHubCardcallback(repo, image_download_url, index) {
+async function composeGithubRepoCard(repo, index) {
     let html = `<div class="embed">
         <a href="${repo['html_url']}"
             class="embed-link"
@@ -450,7 +594,7 @@ async function composeGitHubCardcallback(repo, image_download_url, index) {
         </a>
         <a href="${repo['html_url']}"
             class="embed-image"
-            style="background-size: 80%; background-image: url(${image_download_url});">
+            style="background-size: 80%; background-image: url(${repo['thumbnail_url']});">
         </a>
     </div>`;
 
