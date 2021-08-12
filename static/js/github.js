@@ -199,12 +199,46 @@ function getGithubReposcallback(data) {
         // each process returns an image for use as a thumbnail
 
         let url = repo['url']+"/contents/";
-        thumbnailSearch(repo, index, url, new Array())
+        thumbnailShallowSearch(repo, index, url, new Array())
     });
 }
 
-function thumbnailSearch(repo, index, url, dirs) {
-    console.log(repo, url, dirs);
+function thumbnailShallowSearch(repo, index, url) {
+    $.ajax({
+        // assume url passed is formatted for root dir
+        url: url,
+        timeout: 5000,
+        success: function(contents) {
+            let images = contents.filter(function(item) {
+                if (item['name'].includes(".png") && item['type'] == "file") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            if (images.length == 0) {
+                // if no images found in this dir, use default image
+                composeGitHubCardcallback(repo, "static/img/GitHub-Mark-120px-plus.png", index);
+            }
+            else {
+                // if images are found, use first discovered
+                let image = images[0];
+                composeGitHubCardcallback(repo, image['download_url'], index);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log(repo['url'], "/contents/:", xhr, status, error)
+
+            $('#error-div').attr("visibility", "visible");
+            let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+            $('#error-details').append(html);
+        }
+    });
+}
+
+function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
     $.ajax({
         // assumes initial url passed is formatted for root dir
         url: url,
