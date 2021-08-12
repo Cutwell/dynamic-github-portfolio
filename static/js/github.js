@@ -352,15 +352,13 @@ function filterGithubRepoJson(data) {
     });
 
     filtered.map((repo, index) => {
-        // update repo cache as necessary
-
-        let url = repo['url'];
-        queryGithubRepoCache(url, repo, index);
+        queryGithubThumbnailCache(repo, index);
     });
 }
 
 
-function queryGithubRepoCache(url, api, index) {
+function queryGithubThumbnailCache(api, index) {
+    let url = repo['url'];
     let cache = localStorage.getItem(url);
 
     if (cache === null) {
@@ -369,9 +367,10 @@ function queryGithubRepoCache(url, api, index) {
         thumbnailShallowSearch(api, index, content_url);
     }
     else {
+        let repo = JSON.parse(cache);
+
         if (queryExpired(user_data)) {
             // not expired
-            let repo = JSON.parse(cache);
             composeGitHubCardcallback(repo, index)
         }
         else {
@@ -384,7 +383,7 @@ function queryGithubRepoCache(url, api, index) {
 
 function thumbnailSearchCallback(repo, index) {
     let url = repo['url'];
-    data.cache_genesis = new Date();
+    repo.cache_genesis = new Date();
     let json_string = JSON.stringify(repo);
     localStorage.setItem(url, json_string);
 
