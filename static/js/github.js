@@ -192,11 +192,19 @@ function getGithubUserCachedCallback() {
     }
 }
 
-function queryExpired(cache_json) {
-    if ( Math.floor((new Date() - cache_json['cache_genesis'])/60000) < 2 ) {
+function queryExpired(cache) {
+    if ( Math.floor((new Date() - new Date(cache['cache_genesis']))/60000) < 2 ) {
         return true;
     } else {
         return false;
+    }
+}
+
+function querySuperseded(cache, api) {
+    if ( Math.floor((new Date(api['updated_at']) - new Date(cache['cache_genesis']))/60000) < 2 ) {
+        return false;
+    } else {
+        return true;
     }
 }
 
@@ -352,6 +360,7 @@ function filterGithubRepoJson(data) {
     });
 
     filtered.map((repo, index) => {
+        console.log(repo['url']);
         queryGithubThumbnailCache(repo, index);
     });
 }
@@ -369,14 +378,14 @@ function queryGithubThumbnailCache(api, index) {
     else {
         let repo = JSON.parse(cache);
 
-        if (queryExpired(user_data)) {
-            // not expired
-            composeGitHubCardcallback(repo, index)
-        }
-        else {
-            // expired, search for thumbnail then recreate cache in callback
+        if (querySuperseded(repo, api)) {
+            // superseded, search for thumbnail then recreate cache in callback
             let content_url = repo['url']+"/contents/";
             thumbnailShallowSearch(api, index, content_url);
+        }
+        else {
+            // not superseded
+            composeGitHubCardcallback(repo, index)
         }
     }
 }
