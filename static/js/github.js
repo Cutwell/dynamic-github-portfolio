@@ -316,7 +316,7 @@ function getGithubRepoCachedCallback() {
 }
 
 function getGithubRepoCallback(data) {
-    console.log(getGithubRepoCallback);
+    console.log("getGithubRepoCallback");
 
     if (Object.keys(data).includes('message')) {
         if (data['message'] == "Not Found") {
@@ -333,8 +333,6 @@ function getGithubRepoCallback(data) {
     })
     data.reverse();
 
-    console.log(data);
-
     // store repository list data into cache
     let url = "https://api.github.com/users/"+github+"/repos";
     data.cache_genesis = new Date();
@@ -345,16 +343,13 @@ function getGithubRepoCallback(data) {
 }
 
 function filterGithubRepoJson(data) {
-    console.log(filterGithubRepoJson);
-    console.log("yaml display: ", display);
+    console.log("filterGithubRepoJson");
 
     // reduce repository list to display limit
     if (display > -1) {
         // set length of array to delete data past index.
         data.length = display;
     }
-
-    console.log(data);
 
     // filter repository list, removing repositories that do not meet filter criteria
     // as defined by config.yaml
@@ -382,7 +377,7 @@ function filterGithubRepoJson(data) {
 
 
 function queryGithubThumbnailCache(api, index) {
-    console.log("queryGithubThumbnailCache: ", repo['url']);
+    console.log("queryGithubThumbnailCache: ", api['url']);
 
     let url = repo['url'];
     let cache = localStorage.getItem(url);
@@ -419,7 +414,7 @@ function thumbnailSearchCallback(repo, index) {
 }
 
 function thumbnailShallowSearch(repo, index, url) {
-    console.log("thumbnailShallowSearch: ", content_url);
+    console.log("thumbnailShallowSearch: ", url);
 
     $.ajax({
         // assume url passed is formatted for root dir
