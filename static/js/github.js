@@ -7,6 +7,7 @@ var github = window.location.href.split(".")[0].split("//")[1];
 var min_stars = 0;
 var min_forks = 0;
 var languages = "";
+var display = -1;
 
 function getYAML() {
     $.ajax({
@@ -21,7 +22,7 @@ function getYAML() {
             $('#error-div').css("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`
             $('#error-details').append(html);
-        }
+        },
     });
 }
 
@@ -58,6 +59,8 @@ function getYAMLcallback(yaml) {
             case "languages":
                 languages = (value === undefined) ? "" : value;
                 break;
+            case "display":
+                display = (value === undefined) ? -1 : value;
             default:
                 break;
         }
@@ -82,7 +85,29 @@ function getGithub() {
             $('#error-div').css("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
             $('#error-details').append(html);
-        }
+        },
+        // monitor xhr to catch rate limit errors (not caught by error function)
+        xhr: function(){
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("error", function(evt){
+                console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
+
+                $('#loading').css({"visiblity": "hidden", "display":"none"});
+                $('#error-div').css("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
+                $('#error-details').append(html);
+            }, false);
+            xhr.addEventListener("abort", function(){
+                console.log("https://api.github.com/users/", github, ": ", xhr, status, error)
+
+                $('#loading').css({"visiblity": "hidden", "display":"none"});
+                $('#error-div').css("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`
+                $('#error-details').append(html);
+            }, false);
+    
+            return xhr;
+        },
     });
 
     // get repos
@@ -100,7 +125,29 @@ function getGithub() {
             $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
             $('#error-details').append(html);
-        }
+        },
+        // monitor xhr to catch rate limit errors (not caught by error function)
+        xhr: function(){
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("error", function(evt){
+                console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
+
+                $('#loading').css({"visiblity": "hidden", "display":"none"});
+                $('#error-div').attr("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
+                $('#error-details').append(html);
+            }, false);
+            xhr.addEventListener("abort", function(){
+                console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error)
+
+                $('#loading').css({"visiblity": "hidden", "display":"none"});
+                $('#error-div').attr("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`
+                $('#error-details').append(html);
+            }, false);
+    
+            return xhr;
+        },
     });
 }
 
@@ -156,7 +203,7 @@ function getGithubUsercallback(data) {
             $("#header-hireable").hide();
         }
 
-        $('#profile-header').attr("visibility", "visible");
+        $('#loading').css({"visiblity": "visible"});
         $('#loading').css({"visiblity": "hidden", "display":"none"});
     }
 }
@@ -177,7 +224,13 @@ function getGithubReposcallback(data) {
     })
     data.reverse();
 
-    // iterate repository list, removing repositories that do not meet filter criteria
+    // reduce repository list to display limit
+    if (display > -1) {
+        // set length of array to delete data past index.
+        data.length = display;
+    }
+
+    // filter repository list, removing repositories that do not meet filter criteria
     // as defined by config.yaml
 
     // must iterate .map twice, as spider processes wait on previous indexes to return before adding content
@@ -186,7 +239,9 @@ function getGithubReposcallback(data) {
         // filter by repo >= minimum stars
         // filter by repo >= minimum forks
         // filter by inclusion in languages list (if empty, all are included)
-        if (repo['stargazers_count'] >= min_stars && repo['forks_count'] >= min_forks && (languages.includes(repo['languages']) || languages == "")) {
+        if (repo['stargazers_count'] >= min_stars 
+            && repo['forks_count'] >= min_forks 
+            && (languages.includes(repo['languages']) || languages == "")) {
             return true;
         }
         else {
@@ -234,7 +289,27 @@ function thumbnailShallowSearch(repo, index, url) {
             $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: ${error}</p>`
             $('#error-details').append(html);
-        }
+        },
+        // monitor xhr to catch rate limit errors (not caught by error function)
+        xhr: function(){
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("error", function(evt){
+                console.log(repo['url'], "/contents/:", xhr, status, error)
+
+                $('#error-div').attr("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                $('#error-details').append(html);
+            }, false);
+            xhr.addEventListener("abort", function(){
+                console.log(repo['url'], "/contents/:", xhr, status, error)
+
+                $('#error-div').attr("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                $('#error-details').append(html);
+            }, false);
+    
+            return xhr;
+        },
     });
 }
 
@@ -294,7 +369,27 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
             $('#error-div').attr("visibility", "visible");
             let html = `<p class="error-em">${Date.now()}: ${error}</p>`
             $('#error-details').append(html);
-        }
+        },
+        // monitor xhr to catch rate limit errors (not caught by error function)
+        xhr: function(){
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("error", function(evt){
+                console.log(repo['url'], "/contents/:", xhr, status, error)
+
+                $('#error-div').attr("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                $('#error-details').append(html);
+            }, false);
+            xhr.addEventListener("abort", function(){
+                console.log(repo['url'], "/contents/:", xhr, status, error)
+
+                $('#error-div').attr("visibility", "visible");
+                let html = `<p class="error-em">${Date.now()}: ${error}</p>`
+                $('#error-details').append(html);
+            }, false);
+    
+            return xhr;
+        },
     });
 }
 
