@@ -209,6 +209,8 @@ function querySuperseded(cache, api) {
 }
 
 function getGithubUserAPICallback(data) {
+    console.log("getGithubUserAPICallback");
+
     if (Object.keys(data).includes('message')) {
         if (data['message'] == "Not Found") {
             console.log("User '", github, "' not found. Is `config.yaml` configured?");
@@ -231,6 +233,8 @@ function getGithubUserAPICallback(data) {
 }
 
 function composeGitHubUserProfile(data) {
+    console.log("composeGitHubUserProfile");
+
     $("#header-link").attr('href', data['html_url']);
     $("#header-image").attr('src', data['avatar_url']);
     $("#header-username").text(data["login"]);
@@ -272,11 +276,14 @@ function composeGitHubUserProfile(data) {
         $("#header-hireable").hide();
     }
 
-    $('#loading').css({"visiblity": "visible"});
+    $('#profile-header').css({"visiblity": "visible"});
+    
     $('#loading').css({"visiblity": "hidden", "display":"none"});
 }
 
 function getGithubRepoCachedCallback() {
+    console.log("getGithubRepoCachedCallback");
+
     // check cache for repository data
     let url = "https://api.github.com/users/"+github+"/repos";
     let repo_list_cache = localStorage.getItem(url);
@@ -309,6 +316,8 @@ function getGithubRepoCachedCallback() {
 }
 
 function getGithubRepoCallback(data) {
+    console.log(getGithubRepoCallback);
+
     if (Object.keys(data).includes('message')) {
         if (data['message'] == "Not Found") {
             console.log("User '", github, "' not found. Is `config.yaml` configured?");
@@ -324,6 +333,8 @@ function getGithubRepoCallback(data) {
     })
     data.reverse();
 
+    console.log(data);
+
     // store repository list data into cache
     let url = "https://api.github.com/users/"+github+"/repos";
     data.cache_genesis = new Date();
@@ -334,11 +345,16 @@ function getGithubRepoCallback(data) {
 }
 
 function filterGithubRepoJson(data) {
+    console.log(filterGithubRepoJson);
+    console.log("yaml display: ", display);
+
     // reduce repository list to display limit
     if (display > -1) {
         // set length of array to delete data past index.
         data.length = display;
     }
+
+    console.log(data);
 
     // filter repository list, removing repositories that do not meet filter criteria
     // as defined by config.yaml
@@ -360,13 +376,14 @@ function filterGithubRepoJson(data) {
     });
 
     filtered.map((repo, index) => {
-        console.log(repo['url']);
         queryGithubThumbnailCache(repo, index);
     });
 }
 
 
 function queryGithubThumbnailCache(api, index) {
+    console.log("queryGithubThumbnailCache: ", repo['url']);
+
     let url = repo['url'];
     let cache = localStorage.getItem(url);
 
@@ -391,17 +408,19 @@ function queryGithubThumbnailCache(api, index) {
 }
 
 function thumbnailSearchCallback(repo, index) {
+    console.log("thumbnailSearchCallback: ", repo['url']);
+
     let url = repo['url'];
     repo.cache_genesis = new Date();
     let json_string = JSON.stringify(repo);
     localStorage.setItem(url, json_string);
 
-    console.log(url);
-
     composeGithubRepoCard(repo, index);
 }
 
 function thumbnailShallowSearch(repo, index, url) {
+    console.log("thumbnailShallowSearch: ", content_url);
+
     $.ajax({
         // assume url passed is formatted for root dir
         url: url,
@@ -571,6 +590,8 @@ async function sleepUntil(f, timeoutMs, repo_name) {
 }
 
 async function composeGithubRepoCard(repo, index) {
+    console.log("composeGithubRepoCard: ", repo['url']);
+
     let html = `<div class="embed">
         <a href="${repo['html_url']}"
             class="embed-link"
