@@ -388,6 +388,8 @@ function thumbnailSearchCallback(repo, index) {
     let json_string = JSON.stringify(repo);
     localStorage.setItem(url, json_string);
 
+    console.log(url);
+
     composeGithubRepoCard(repo, index);
 }
 
