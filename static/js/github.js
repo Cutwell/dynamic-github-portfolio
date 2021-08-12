@@ -18,8 +18,8 @@ function getYAML() {
         error: function(xhr, status, error) {
             console.log("config.yaml: ", xhr, status, error);
 
-            $('#loading').css({"visiblity": "hidden", "display":"none"});
-            $('#error-div').css("visibility", "visible");
+            document.getElementById("loading").style.display = "none";
+                document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: Failed to load 'config.yaml'</p>`;
             $('#error-details').append(html);
         },
@@ -81,8 +81,8 @@ function getGithub() {
         error: function(xhr, status, error) {
             console.log("https://api.github.com/users/", github, ": ", xhr, status, error);
 
-            $('#loading').css({"visiblity": "hidden", "display":"none"});
-            $('#error-div').css("visibility", "visible");
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`;
             $('#error-details').append(html);
 
@@ -94,8 +94,8 @@ function getGithub() {
             xhr.addEventListener("error", function(evt){
                 console.log("https://api.github.com/users/", github, ": ", xhr, status, error);
 
-                $('#loading').css({"visiblity": "hidden", "display":"none"});
-                $('#error-div').css("visibility", "visible");
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`;
                 $('#error-details').append(html);
 
@@ -104,8 +104,8 @@ function getGithub() {
             xhr.addEventListener("abort", function(){
                 console.log("https://api.github.com/users/", github, ": ", xhr, status, error);
 
-                $('#loading').css({"visiblity": "hidden", "display":"none"});
-                $('#error-div').css("visibility", "visible");
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: Request to ${"https://api.github.com/users/"+github} failed</p>`;
                 $('#error-details').append(html);
 
@@ -127,8 +127,8 @@ function getGithub() {
         error: function(xhr, status, error) {
             console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error);
 
-            $('#loading').css({"visiblity": "hidden", "display":"none"});
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
             $('#error-details').append(html);
 
@@ -140,16 +140,16 @@ function getGithub() {
             xhr.addEventListener("error", function(evt){
                 console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error);
 
-                $('#loading').css({"visiblity": "hidden", "display":"none"});
-                $('#error-div').attr("visibility", "visible");
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
                 $('#error-details').append(html);
             }, false);
             xhr.addEventListener("abort", function(){
                 console.log("https://api.github.com/users/", github, "/repos: ", xhr, status, error);
 
-                $('#loading').css({"visiblity": "hidden", "display":"none"});
-                $('#error-div').attr("visibility", "visible");
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
                 $('#error-details').append(html);
             }, false);
@@ -168,8 +168,8 @@ function getGithubUserCachedCallback() {
     if (user_cache === null) {
         console.log("https://api.github.com/users/", github, " cache empty");
 
-        $('#loading').css({"visiblity": "hidden", "display":"none"});
-        $('#error-div').attr("visibility", "visible");
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("error-div").style.visibility = "visible";
         let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github} failed</p>`;
         $('#error-details').append(html);
     }
@@ -184,8 +184,8 @@ function getGithubUserCachedCallback() {
             // expired
             console.log("https://api.github.com/users/", github, " cache expired");
 
-            $('#loading').css({"visiblity": "hidden", "display":"none"});
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github} failed</p>`;
             $('#error-details').append(html);
         }
@@ -215,7 +215,7 @@ function getGithubUserAPICallback(data) {
         if (data['message'] == "Not Found") {
             console.log("User '", github, "' not found. Is `config.yaml` configured?");
 
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`;
             $('#error-details').append(html);
         }
@@ -276,7 +276,7 @@ function composeGitHubUserProfile(data) {
         $("#header-hireable").hide();
     }
 
-    $('#profile-header').css({"visiblity": "visible"});
+    document.getElementById("profile-header").style.visibility = "visible";
     
     $('#loading').css({"visiblity": "hidden", "display":"none"});
 }
@@ -291,8 +291,9 @@ function getGithubRepoCachedCallback() {
     if (repo_list_cache === null) {
         console.log("https://api.github.com/users/", github, "/repos cache empty");
 
-        $('#loading').css({"visiblity": "hidden", "display":"none"});
-        $('#error-div').attr("visibility", "visible");
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("error-div").style.visibility = "visible";
+
         let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
         $('#error-details').append(html);
     }
@@ -307,8 +308,8 @@ function getGithubRepoCachedCallback() {
             // expired
             console.log("https://api.github.com/users/", github, "/repos cache expired");
 
-            $('#loading').css({"visiblity": "hidden", "display":"none"});
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("loading").style.display = "none";
+        document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: ${"https://api.github.com/users/"+github+"/repos"} failed</p>`;
             $('#error-details').append(html);
         }
@@ -322,7 +323,7 @@ function getGithubRepoCallback(data) {
         if (data['message'] == "Not Found") {
             console.log("User '", github, "' not found. Is `config.yaml` configured?");
 
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: User '${github}' not found. Is 'config.yaml' configured?</p>`;
             $('#error-details').append(html);
         }
@@ -445,7 +446,7 @@ function thumbnailShallowSearch(repo, index, url) {
         error: function(xhr, status, error) {
             console.log(repo['url'], "/contents/:", xhr, status, error);
 
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
             $('#error-details').append(html);
 
@@ -458,7 +459,7 @@ function thumbnailShallowSearch(repo, index, url) {
             xhr.addEventListener("error", function(evt){
                 console.log(repo['url'], "/contents/:", xhr, status, error);
 
-                $('#error-div').attr("visibility", "visible");
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
 
@@ -468,7 +469,7 @@ function thumbnailShallowSearch(repo, index, url) {
             xhr.addEventListener("abort", function(){
                 console.log(repo['url'], "/contents/:", xhr, status, error);
 
-                $('#error-div').attr("visibility", "visible");
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
 
@@ -534,7 +535,7 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
         error: function(xhr, status, error) {
             console.log(repo['url'], "/contents/:", xhr, status, error);
 
-            $('#error-div').attr("visibility", "visible");
+            document.getElementById("error-div").style.visibility = "visible";
             let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
             $('#error-details').append(html);
         },
@@ -544,14 +545,14 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
             xhr.addEventListener("error", function(evt){
                 console.log(repo['url'], "/contents/:", xhr, status, error);
 
-                $('#error-div').attr("visibility", "visible");
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
             }, false);
             xhr.addEventListener("abort", function(){
                 console.log(repo['url'], "/contents/:", xhr, status, error);
 
-                $('#error-div').attr("visibility", "visible");
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
             }, false);
@@ -573,7 +574,7 @@ async function sleepUntil(f, timeoutMs, repo_name) {
                 let ms_reject = new Date() - timeWas;
 
                 console.log(`${repo_name} did not resolve within ${ms_reject}ms`)
-                $('#error-div').css("visibility", "visible");
+                document.getElementById("error-div").style.visibility = "visible";
                 let html = `<p class="error-em">${Date.now()}: ${repo_name} did not resolve within ${ms_reject}</p>`
                 $('#error-details').append(html);
 
