@@ -397,7 +397,7 @@ function queryGithubThumbnailCache(api, index) {
         }
         else {
             // not superseded
-            composeGitHubCardcallback(repo, index)
+            composeGithubRepoCard(repo, index)
         }
     }
 }
@@ -517,7 +517,7 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
                 // if no images found in this dir
                 if (dirs.length == 0) {
                     // if no further directories to view, use default image
-                    composeGitHubCardcallback(repo, "static/img/GitHub-Mark-120px-plus.png", index);
+                    composeGithubRepoCard(repo, "static/img/GitHub-Mark-120px-plus.png", index);
                 }
                 else {
                     // recurse, using a dir from dirs
@@ -528,7 +528,7 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
             else {
                 // if images are found, use first discovered
                 let image = images[0];
-                composeGitHubCardcallback(repo, image['download_url'], index);
+                composeGithubRepoCard(repo, image['download_url'], index);
             }
         },
         error: function(xhr, status, error) {
