@@ -433,7 +433,7 @@ function thumbnailShallowSearch(repo, index, url) {
 
             if (images.length == 0) {
                 // if no images found in this dir, use default image
-                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus_min.png";
                 thumbnailSearchCallback(repo, index);
             }
             else {
@@ -450,7 +450,7 @@ function thumbnailShallowSearch(repo, index, url) {
             let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
             $('#error-details').append(html);
 
-            repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+            repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus_min.png";
             thumbnailSearchCallback(repo, index);
         },
         // monitor xhr to catch rate limit errors (not caught by error function)
@@ -463,7 +463,7 @@ function thumbnailShallowSearch(repo, index, url) {
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
 
-                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus_min.png";
                 thumbnailSearchCallback(repo, index);
             }, false);
             xhr.addEventListener("abort", function(){
@@ -473,7 +473,7 @@ function thumbnailShallowSearch(repo, index, url) {
                 let html = `<p class="error-em">${Date.now()}: ${error}</p>`;
                 $('#error-details').append(html);
 
-                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus.png";
+                repo.thumbnail_url = "static/img/GitHub-Mark-120px-plus_min.png";
                 thumbnailSearchCallback(repo, index);
             }, false);
     
@@ -518,7 +518,7 @@ function thumbnailBreadthFirstSearch(repo, index, url, dirs) {
                 // if no images found in this dir
                 if (dirs.length == 0) {
                     // if no further directories to view, use default image
-                    composeGithubRepoCard(repo, "static/img/GitHub-Mark-120px-plus.png", index);
+                    composeGithubRepoCard(repo, "static/img/GitHub-Mark-120px-plus_min.png", index);
                 }
                 else {
                     // recurse, using a dir from dirs
@@ -621,7 +621,7 @@ async function composeGithubRepoCard(repo, index) {
         </a>
         <a href="${repo['html_url']}"
             class="embed-image"
-            style="background-size: 80%; background-image: url(${repo['thumbnail_url']});">
+            style="background-image: url(${repo['thumbnail_url']});">
         </a>
     </div>`;
 
